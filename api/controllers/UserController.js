@@ -46,7 +46,7 @@ module.exports = {
         password : Joi.string().required()
       })
 
-      monkeylearnAPI.languageClassifier(['salut !'])
+      monkeylearnAPI.languageClassifier(['super !'])
       monkeylearnAPI.urgencyDetection(['urgent'])
       
       const {phone , password} = await Joi.validate(req.allParams(), schema)
