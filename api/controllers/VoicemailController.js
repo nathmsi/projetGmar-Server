@@ -6,27 +6,37 @@
  */
 
 module.exports = {
-  
 
- /**
-   * `JobController.create()`
-   */
+
+  /**
+    * `JobController.create()`
+    */
   create: async function (req, res) {
     try {
-      let { phone, content } = req.allParams()
+      let { phone, content, receiverPhone } = req.allParams()
       if (!phone) {
-        return res.badRequest({err : 'phone is required field'})
+        return res.badRequest({ err: 'phone is required field' })
       }
       if (!content) {
-        return res.badRequest({err : 'content is required field'})
+        return res.badRequest({ err: 'content is required field' })
       }
-      const user = await User.findOne({ phone : phone })
+      if (!receiverPhone) {
+        return res.badRequest({ err: 'receiverPhone is required field' })
+      }
+
+      const user = await User.findOne({ phone: receiverPhone })
 
       if (!user) {
-        return res.badRequest({err : 'phone not matched with any users'})
+        return res.badRequest({ err: 'phone not matched with any users' })
       }
 
-      const voicemail = await Voicemail.create({content , phone , userId : user.id }).fetch()
+      let languageClassifier , urgencyDetection = ''
+      languageClassifier  =  await monkeylearnAPI.languageClassifier([content])
+      urgencyDetection  =  await monkeylearnAPI.urgencyDetection([content])
+      
+
+      const voicemail = await Voicemail.create({ content, phone, receiverPhone, languageClassifier : languageClassifier, 
+                                                  urgencyDetection : urgencyDetection, userId: user.id }).fetch()
       return res.ok(voicemail)
     }
     catch (err) {
@@ -40,7 +50,7 @@ module.exports = {
   find: async function (req, res) {
     try {
       const myIdUser = req.user
-      const voicemals = await Voicemail.find({ userId : myIdUser})
+      const voicemals = await Voicemail.find({ userId: myIdUser })
       return res.ok(voicemals)
     }
     catch (err) {

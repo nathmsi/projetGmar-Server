@@ -20,6 +20,16 @@ module.exports = {
       type: 'string',
       required: true
     },
+    receiverPhone: {
+      type: 'string',
+      required: true
+    },
+    languageClassifier : {
+      type: 'string',
+    },
+    urgencyDetection :{
+      type: 'string'
+    },
 
     //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗
     //  ║╣ ║║║╠╩╗║╣  ║║╚═╗
