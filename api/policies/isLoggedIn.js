@@ -1,17 +1,21 @@
-module.exports = async function (req,res,next){
-
-    if(!req.headers || !req.headers.authorization){
-        return res.badRequest({err: 'authorization header is missing'})
+module.exports = async function (req, res, next) {
+    try {
+        if (!req.headers || !req.headers.authorization) {
+            return res.badRequest({ err: 'authorization header is missing' })
+        }
+        const tokenParam = req.headers.authorization
+        const decodedToken = JWTService.verify(tokenParam)
+        const user = await User.findOne({
+            id: decodedToken.user
+        })
+        if (!user) {
+            next({ err: 'invalid credentials provided' })
+        }
+        req.user = user.id
+        req.phone = user.phone
+        next()
     }
-    const tokenParam = req.headers.authorization
-    const decodedToken = JWTService.verify(tokenParam)
-    const user = await User.findOne({
-        id : decodedToken.user
-    })
-    if(!user){
-        next({err : 'invalid credentials provided'})
+    catch (err) {
+        return res.badRequest({ err })
     }
-    req.user = user.id
-    req.phone = user.phone
-    next()
 }

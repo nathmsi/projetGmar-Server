@@ -8,7 +8,7 @@
 const Joi = require('joi')
 
 module.exports = {
-  
+
 
   /**
    * `UserController.signup()`
@@ -16,23 +16,22 @@ module.exports = {
   signup: async function (req, res) {
     try {
       const schema = Joi.object().keys({
-        phone : Joi.string().required(),
-        password : Joi.string().required()
+        phone: Joi.string().required(),
+        password: Joi.string().required()
       })
 
-
-
-      const {phone , password} = await Joi.validate(req.allParams(), schema)
+      const { phone, password } = await Joi.validate(req.allParams(), schema)
       const encryptPassword = await UtilService.hashPassword(password)
 
-      const results = await User.create({ phone , password : encryptPassword})
+      const results = await User.create({ phone, password: encryptPassword })
       return res.ok(results)
+      console.log('signup phone number : ' + phone)
     }
     catch (err) {
-      if(err.name === 'ValidationError'){
-        return res.badRequest({err : 'ValidationError'})
+      if (err.name === 'ValidationError') {
+        return res.badRequest({ err: 'ValidationError' })
       }
-      return res.badRequest({err : 'user exist '})
+      return res.badRequest({ err: 'user exist ' })
     }
   },
 
@@ -42,30 +41,30 @@ module.exports = {
   login: async function (req, res) {
     try {
       const schema = Joi.object().keys({
-        phone : Joi.string().required(),
-        password : Joi.string().required()
+        phone: Joi.string().required(),
+        password: Joi.string().required()
       })
 
-     
-      
-      const {phone , password} = await Joi.validate(req.allParams(), schema)
-      const user = await User.findOne({phone})
-      if(!user){
-        return res.badRequest({err : 'user does not exist'})
+
+
+      const { phone, password } = await Joi.validate(req.allParams(), schema)
+      const user = await User.findOne({ phone })
+      if (!user) {
+        return res.badRequest({ err: 'user does not exist' })
       }
       const matchedPassword = await UtilService.comparePassword(password, user.password)
-      if(!matchedPassword){
-        return res.badRequest({err : 'passord incorrect'})
+      if (!matchedPassword) {
+        return res.badRequest({ err: 'passord incorrect' })
       }
-      const token = JWTService.issuer({user : user.id}, '1 day')
+      const token = JWTService.issuer({ user: user.id }, '7 day')
       console.log('login phone number : ' + user.phone)
-      return res.ok({token})
+      return res.ok({ token })
     }
     catch (err) {
-      if(err.name === 'ValidationError'){
-        return res.badRequest({err})
+      if (err.name === 'ValidationError') {
+        return res.badRequest({ err: 'ValidationError' })
       }
-      return res.serverError(err)
+      return res.badRequest({ err })
     }
   }
 
