@@ -23,7 +23,9 @@ module.exports.policies = {
     '*': 'isLoggedIn'
   },
   UserController:{
-    '*' :true
+    'signup' :true,
+    'login' :true,
+    'pushToken': 'isLoggedIn'
   }
 
 };

@@ -37,8 +37,10 @@ module.exports = {
 
       const voicemail = await Voicemail.create({ content, phone, receiverPhone, languageClassifier : languageClassifier, 
                                                   urgencyDetection : urgencyDetection, userId: user.id }).fetch()
+
+      await expoPushNotification.sendNotiication(user.pushToken , voicemail )
+
       return res.ok(voicemail)
-      console.log('voicemail created tp phone '+ receiverPhone)
     }
     catch (err) {
       return res.serverError(err)

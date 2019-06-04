@@ -66,6 +66,28 @@ module.exports = {
       }
       return res.badRequest({ err })
     }
+  },
+
+  pushToken : async function (req, res) {
+    try {
+      const { pushToken } = req.allParams()
+      const phone = req.phone
+
+      const user = await User.findOne({ phone })
+      if (!user) {
+        return res.badRequest({ err: 'user does not exist' })
+      }
+
+      const results = await User.updateOne({ phone }).set({pushToken});
+      console.log('pushtoken : ' + pushToken )
+      return res.ok({ results })
+    }
+    catch (err) {
+      if (err.name === 'ValidationError') {
+        return res.badRequest({ err: 'ValidationError' })
+      }
+      return res.badRequest({ err })
+    }
   }
 
 };

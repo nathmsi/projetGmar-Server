@@ -19,6 +19,6 @@ module.exports.routes = {
     //Users
     'POST /user/login' : 'UserController.login',
     'POST /user/signup' : 'UserController.signup',
-
+    'POST /user/pushToken' : 'UserController.pushToken',
 
 };

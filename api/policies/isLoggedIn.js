@@ -11,6 +11,7 @@ module.exports = async function (req, res, next) {
         if (!user) {
             next({ err: 'invalid credentials provided' })
         }
+        req.pushToken = user.pushToken
         req.user = user.id
         req.phone = user.phone
         next()
