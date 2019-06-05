@@ -8,8 +8,10 @@ module.exports = {
         messages.push({
             to: pushToken,
             sound: 'default',
-            body: voicemail.phone,
-            data: { voicemail : voicemail },
+            title : voicemail.phone,
+            body: voicemail.content,
+            priority : 'normal' ,
+            data: voicemail ,
         })
         let expo = new Expo();
         if (!Expo.isExpoPushToken(pushToken)) {
@@ -24,7 +26,7 @@ module.exports = {
             for (let chunk of chunks) {
                 try {
                     let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
-                    console.log(ticketChunk);
+                    //console.log(ticketChunk);
                     tickets.push(...ticketChunk);
                     // NOTE: If a ticket contains an error code in ticket.details.error, you
                     // must handle it appropriately. The error codes are listed in the Expo
@@ -67,7 +69,7 @@ module.exports = {
             for (let chunk of receiptIdChunks) {
                 try {
                     let receipts = await expo.getPushNotificationReceiptsAsync(chunk);
-                    console.log(receipts);
+                    //console.log(receipts);
 
                     // The receipts specify whether Apple or Google successfully received the
                     // notification and information about an error, if one occurred.

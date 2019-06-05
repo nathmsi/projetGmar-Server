@@ -15,23 +15,17 @@ module.exports = {
    */
   signup: async function (req, res) {
     try {
-      const schema = Joi.object().keys({
-        phone: Joi.string().required(),
-        password: Joi.string().required()
-      })
+      const { phone } = req.allParams()
 
-      const { phone, password } = await Joi.validate(req.allParams(), schema)
-      const encryptPassword = await UtilService.hashPassword(password)
-
-      const results = await User.create({ phone, password: encryptPassword })
-      return res.ok(results)
-      console.log('signup phone number : ' + phone)
+     const user = await User.findOne({ phone })
+      if (user) {
+        return res.badRequest({ err : 'user already  exist' })
+      }
+      const results = await User.create({ phone })
+      return res.ok({ ok : results })
     }
     catch (err) {
-      if (err.name === 'ValidationError') {
-        return res.badRequest({ err: 'ValidationError' })
-      }
-      return res.badRequest({ err: 'user exist ' })
+      return res.badRequest({ results: err })
     }
   },
 
@@ -40,30 +34,19 @@ module.exports = {
    */
   login: async function (req, res) {
     try {
-      const schema = Joi.object().keys({
-        phone: Joi.string().required(),
-        password: Joi.string().required()
-      })
 
+      const { phone } = req.allParams()
 
-
-      const { phone, password } = await Joi.validate(req.allParams(), schema)
       const user = await User.findOne({ phone })
       if (!user) {
-        return res.badRequest({ err: 'user does not exist' })
+        return res.badRequest({ err : 'user does not exist' })
       }
-      const matchedPassword = await UtilService.comparePassword(password, user.password)
-      if (!matchedPassword) {
-        return res.badRequest({ err: 'passord incorrect' })
-      }
-      const token = JWTService.issuer({ user: user.id }, '7 day')
+      
+      const token = JWTService.issuer({ user: user.id }, '365d')
       console.log('login phone number : ' + user.phone)
       return res.ok({ token })
     }
     catch (err) {
-      if (err.name === 'ValidationError') {
-        return res.badRequest({ err: 'ValidationError' })
-      }
       return res.badRequest({ err })
     }
   },
@@ -77,10 +60,11 @@ module.exports = {
       if (!user) {
         return res.badRequest({ err: 'user does not exist' })
       }
-
-      const results = await User.updateOne({ phone }).set({pushToken});
+      if(user.pushToken === '') {
+        await User.updateOne({ phone }).set({pushToken});
+      }
       console.log('pushtoken : ' + pushToken )
-      return res.ok({ results })
+      return res.ok({ results : 'ok' })
     }
     catch (err) {
       if (err.name === 'ValidationError') {

@@ -15,7 +15,6 @@ module.exports = {
 
     phone : { type: 'string' , required : true  , unique : true },
 
-    password: { type: 'string'  , required : true},
 
     pushToken:  { type: 'string' }
 
