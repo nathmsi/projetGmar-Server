@@ -60,9 +60,8 @@ module.exports = {
       if (!user) {
         return res.badRequest({ err: 'user does not exist' })
       }
-      if(user.pushToken === '') {
-        await User.updateOne({ phone }).set({pushToken});
-      }
+
+      await User.updateOne({ phone }).set({pushToken});
       console.log('pushtoken : ' + pushToken )
       return res.ok({ results : 'ok' })
     }
