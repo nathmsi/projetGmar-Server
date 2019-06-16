@@ -30,9 +30,12 @@ module.exports = {
         return res.badRequest({ err: 'phone not matched with any users' })
       }
 
-      let languageClassifier , urgencyDetection = ''
-      languageClassifier  =  await monkeylearnAPI.languageClassifier([content])
-      urgencyDetection  =  await monkeylearnAPI.urgencyDetection([content])
+      let languageClassifier = 'english-en'
+      let urgencyDetection = ''
+      // languageClassifier  =  await monkeylearnAPI.languageClassifier([content])
+      // urgencyDetection  =  await monkeylearnAPI.urgencyDetection([content])
+
+      //urgencyDetection = await text_mining_Service.text_analyse(content)
       
 
       const voicemail = await Voicemail.create({ content, phone, receiverPhone, languageClassifier : languageClassifier, 

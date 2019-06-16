@@ -34,14 +34,11 @@ module.exports = {
    */
   login: async function (req, res) {
     try {
-
       const { phone } = req.allParams()
-
       const user = await User.findOne({ phone })
       if (!user) {
         return res.badRequest({ err : 'user does not exist' })
-      }
-      
+      } 
       const token = JWTService.issuer({ user: user.id }, '365d')
       console.log('login phone number : ' + user.phone)
       return res.ok({ token })

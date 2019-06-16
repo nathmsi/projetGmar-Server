@@ -7,10 +7,10 @@ module.exports = {
         let messages = [];
         messages.push({
             to: pushToken,
-            sound: 'default',
             title : voicemail.phone,
             body: voicemail.content,
-            priority : 'normal' ,
+            sound: 'default',
+	        priority: 'normal',
             data: voicemail ,
         })
         let expo = new Expo();
